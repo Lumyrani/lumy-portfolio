@@ -21,6 +21,44 @@ body {
   color: var(--text-color);
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent horizontal scroll */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+  a,
+  button,
+  .btn {
+    -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+    tap-highlight-color: rgba(99, 102, 241, 0.2);
+  }
+
+  /* Improve touch targets */
+  .nav-menu a {
+    padding: 0.75rem 1rem;
+    display: block;
+  }
+
+  .project-link,
+  .social-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent body scroll when menu is open */
+  body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
 }
 
 .container {
@@ -229,6 +267,13 @@ body {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  display: block;
+}
+
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 .profile-placeholder:hover {
@@ -707,8 +752,68 @@ section {
   }
 }
 
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 /* Responsive Design */
+
+/* Tablet and Medium Screens */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 30px;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+  }
+
+  .about-content {
+    gap: 2rem;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-content {
+    gap: 2rem;
+  }
+}
+
+/* Tablet */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  /* Navigation */
   .nav-menu {
     position: fixed;
     left: -100%;
@@ -721,6 +826,7 @@ section {
     box-shadow: var(--shadow);
     padding: 2rem 0;
     gap: 1rem;
+    z-index: 999;
   }
 
   .nav-menu.active {
@@ -729,6 +835,7 @@ section {
 
   .hamburger {
     display: flex;
+    z-index: 1001;
   }
 
   .hamburger.active span:nth-child(1) {
@@ -743,72 +850,409 @@ section {
     transform: rotate(-45deg) translate(7px, -6px);
   }
 
+  /* Hero Section */
+  .hero {
+    padding: 80px 0 40px;
+    min-height: auto;
+  }
+
   .hero .container {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 2rem;
   }
 
   .hero-title {
     font-size: 2.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .hero-subtitle {
     font-size: 1.2rem;
+    margin-bottom: 0.75rem;
   }
 
-  .about-content,
-  .contact-content {
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .profile-placeholder {
+    width: 250px;
+    height: 250px;
+    font-size: 6rem;
+  }
+
+  /* Sections */
+  section {
+    padding: 60px 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* About Section */
+  .about-content {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .about-stats {
     flex-direction: row;
     justify-content: space-around;
+    gap: 1rem;
   }
 
   .stat-item {
     flex: 1;
-    margin: 0 0.5rem;
+    margin: 0;
+    padding: 1.25rem;
   }
 
+  .stat-item h3 {
+    font-size: 2rem;
+  }
+
+  .stat-item p {
+    font-size: 0.9rem;
+  }
+
+  /* Skills Section */
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .skill-category {
+    padding: 1.5rem;
+  }
+
+  /* Experience Section */
   .timeline {
     padding-left: 1rem;
+    max-width: 100%;
   }
 
   .timeline-item {
     padding-left: 2rem;
+    margin-bottom: 2rem;
   }
 
+  .timeline-content {
+    padding: 1.5rem;
+  }
+
+  .timeline-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .timeline-content h4 {
+    font-size: 1rem;
+  }
+
+  .timeline-content ul {
+    padding-left: 1.25rem;
+  }
+
+  .timeline-content li {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Projects Section */
   .projects-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .section-title {
-    font-size: 2rem;
+  .project-content {
+    padding: 1.25rem;
+  }
+
+  .project-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .project-content p {
+    font-size: 0.95rem;
+  }
+
+  /* Contact Section */
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contact-info p {
+    font-size: 1rem;
+  }
+
+  .contact-item {
+    font-size: 1rem;
+  }
+
+  .contact-form {
+    padding: 1.5rem;
+  }
+
+  .social-links {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
+/* Mobile Devices */
 @media (max-width: 480px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  /* Navigation */
+  .nav-brand {
+    font-size: 1.2rem;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 70px 0 30px;
+  }
+
   .hero-title {
     font-size: 2rem;
+    line-height: 1.1;
   }
 
   .hero-subtitle {
     font-size: 1rem;
   }
 
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
   .hero-buttons {
     flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
   }
 
   .btn {
     width: 100%;
     justify-content: center;
+    padding: 10px 20px;
+    font-size: 0.95rem;
   }
 
   .profile-placeholder {
     width: 200px;
     height: 200px;
     font-size: 5rem;
+  }
+
+  /* Sections */
+  section {
+    padding: 50px 0;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* About Section */
+  .about-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stat-item {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .stat-item h3 {
+    font-size: 1.75rem;
+  }
+
+  /* Skills Section */
+  .skill-category {
+    padding: 1.25rem;
+  }
+
+  .skill-category h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-tag {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Experience Section */
+  .timeline {
+    padding-left: 0.75rem;
+  }
+
+  .timeline-item {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-item::before {
+    left: -1rem;
+    width: 10px;
+    height: 10px;
+  }
+
+  .timeline-date {
+    font-size: 1rem;
+  }
+
+  .timeline-content {
+    padding: 1.25rem;
+  }
+
+  .timeline-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .timeline-content h4 {
+    font-size: 0.95rem;
+  }
+
+  .timeline-content p {
+    font-size: 0.9rem;
+  }
+
+  .timeline-content li {
+    font-size: 0.85rem;
+  }
+
+  /* Projects Section */
+  .project-image {
+    height: 150px;
+  }
+
+  .project-placeholder {
+    font-size: 3rem;
+  }
+
+  .project-content {
+    padding: 1rem;
+  }
+
+  .project-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-content p {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-tech span {
+    padding: 3px 10px;
+    font-size: 0.8rem;
+  }
+
+  .project-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .project-link {
+    font-size: 0.9rem;
+  }
+
+  /* Contact Section */
+  .contact-info p {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-item {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-item span {
+    word-break: break-word;
+  }
+
+  .social-links {
+    gap: 0.75rem;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .contact-form {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 1.5rem 0;
+  }
+
+  .footer-note {
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .profile-placeholder {
+    width: 180px;
+    height: 180px;
+  }
+
+  .stat-item h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Landscape Orientation for Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding: 60px 0 30px;
+  }
+
+  .profile-placeholder {
+    width: 200px;
+    height: 200px;
   }
 }

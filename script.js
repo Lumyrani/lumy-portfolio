@@ -32,6 +32,35 @@ document.querySelectorAll('.nav-menu a').forEach(link => {
     });
 });
 
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    const isClickInsideNav = navMenu.contains(e.target);
+    const isClickOnHamburger = hamburger && hamburger.contains(e.target);
+    
+    if (!isClickInsideNav && !isClickOnHamburger && navMenu.classList.contains('active')) {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+    }
+});
+
+// Prevent body scroll when mobile menu is open
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        if (navMenu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Restore scroll when menu closes
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.body.style.overflow = '';
+        });
+    });
+}
+
 // Navbar background on scroll
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
@@ -49,34 +78,55 @@ window.addEventListener('scroll', () => {
     lastScroll = currentScroll;
 });
 
-// Contact form submission
+// Contact form submission with Formspree
 const contactForm = document.querySelector('#contactForm');
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+    contactForm.addEventListener('submit', async (e) => {
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
         
-        // Get form data
-        const formData = new FormData(contactForm);
-        const name = contactForm.querySelector('input[type="text"]').value;
-        const email = contactForm.querySelector('input[type="email"]').value;
-        const subject = contactForm.querySelectorAll('input[type="text"]')[1].value;
-        const message = contactForm.querySelector('textarea').value;
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitButton.style.opacity = '0.7';
+        submitButton.style.cursor = 'not-allowed';
         
-        // You can integrate with services like:
-        // - Formspree: https://formspree.io/
-        // - EmailJS: https://www.emailjs.com/
-        // - Your own backend API
+        // Formspree will handle the submission
+        // The form will submit normally to Formspree endpoint
+    });
+    
+    // Handle Formspree success redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! I will get back to you soon.';
+        document.body.appendChild(successMessage);
         
-        // For now, we'll show a success message
-        // In production, replace this with actual form submission
-        alert(`Thank you for your message, ${name}! I will get back to you soon at ${email}.`);
+        // Remove message after 5 seconds
+        setTimeout(() => {
+            successMessage.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => successMessage.remove(), 300);
+        }, 5000);
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
         
         // Reset form
         contactForm.reset();
-        
-        // Optional: Log to console for development
-        console.log('Form submitted:', { name, email, subject, message });
-    });
+    }
 }
 
 // Animate elements on scroll
